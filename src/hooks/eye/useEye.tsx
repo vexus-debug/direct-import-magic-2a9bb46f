@@ -20,7 +20,7 @@ export interface EyeExam {
   cd_ratio_od: number | null; cd_ratio_os: number | null;
   dilated: boolean | null; diagnosis: string | null; plan: string | null; notes: string | null;
   created_at: string;
-  patients?: { first_name: string; last_name: string } | null;
+  patients?: { first_name: string; last_name: string; phone?: string | null } | null;
 }
 
 export interface OpticalPrescription {
@@ -115,7 +115,7 @@ function useList<T>(table: string, key: string, patientId?: string, orderCol = "
     queryKey: [key, orgId, patientId || "all"],
     enabled: !!orgId,
     queryFn: async () => {
-      let q = db.from(table).select("*, patients(first_name, last_name)").eq("org_id", orgId)
+      let q = db.from(table).select("*, patients(first_name, last_name, phone)").eq("org_id", orgId)
         .order(orderCol, { ascending: false });
       if (patientId) q = q.eq("patient_id", patientId);
       const { data, error } = await q;
