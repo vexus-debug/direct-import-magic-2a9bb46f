@@ -30,7 +30,7 @@ export interface OpticalPrescription {
   sphere_os: number | null; cylinder_os: number | null; axis_os: number | null; add_os: number | null; prism_os: string | null;
   pd: number | null; base_curve: number | null; diameter: number | null; lens_brand: string | null;
   notes: string | null; created_at: string;
-  patients?: { first_name: string; last_name: string } | null;
+  patients?: { first_name: string; last_name: string; phone?: string | null } | null;
 }
 
 export interface ContactLensFitting {
