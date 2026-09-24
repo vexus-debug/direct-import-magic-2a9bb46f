@@ -13,7 +13,36 @@ import {
   useOpticalPrescriptions, useSaveOpticalPrescription, useDeleteOpticalPrescription,
   RX_TYPES, patientName, formatRxEye, type OpticalPrescription,
 } from "@/hooks/eye/useEye";
-import { Plus, Trash2, Glasses } from "lucide-react";
+import { Plus, Trash2, Glasses, Printer, MessageCircle } from "lucide-react";
+import { whatsappLink } from "@/hooks/eye/useEyeOps";
+import { useOrg } from "@/hooks/useOrg";
+
+const rxText = (r: OpticalPrescription) =>
+  `Glasses prescription for ${patientName(r)} (${r.rx_type || "Distance"}), issued ${new Date(r.issue_date).toLocaleDateString()}\n` +
+  `Right eye (OD): ${formatRxEye(r.sphere_od, r.cylinder_od, r.axis_od, r.add_od)}\n` +
+  `Left eye (OS): ${formatRxEye(r.sphere_os, r.cylinder_os, r.axis_os, r.add_os)}` +
+  (r.pd ? `\nPD: ${r.pd}` : "") + (r.expiry_date ? `\nValid until: ${new Date(r.expiry_date).toLocaleDateString()}` : "");
+
+function printRx(r: OpticalPrescription, clinic: string) {
+  const w = window.open("", "_blank");
+  if (!w) return;
+  const esc = (v: unknown) => String(v ?? "—").replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]!));
+  const row = (eye: string, s: any, c: any, a: any, ad: any, pr: any) =>
+    `<tr><td>${eye}</td><td>${esc(s)}</td><td>${esc(c)}</td><td>${esc(a)}</td><td>${esc(ad)}</td><td>${esc(pr)}</td></tr>`;
+  w.document.write(`<html><head><title>Prescription - ${esc(patientName(r))}</title><style>
+body{font-family:Georgia,serif;padding:40px;color:#111}h1{margin:0}table{border-collapse:collapse;width:100%;margin:20px 0}
+td,th{border:1px solid #999;padding:8px;text-align:center}.m{color:#555;font-size:14px}</style></head><body>
+<h1>${esc(clinic)}</h1><p class="m">Glasses prescription</p><hr/>
+<p><b>Patient:</b> ${esc(patientName(r))}<br/><b>Type:</b> ${esc(r.rx_type || "Distance")}<br/>
+<b>Issued:</b> ${new Date(r.issue_date).toLocaleDateString()}${r.expiry_date ? `<br/><b>Valid until:</b> ${new Date(r.expiry_date).toLocaleDateString()}` : ""}</p>
+<table><tr><th>Eye</th><th>Sphere</th><th>Cylinder</th><th>Axis</th><th>Add</th><th>Prism</th></tr>
+${row("Right (OD)", r.sphere_od, r.cylinder_od, r.axis_od, r.add_od, r.prism_od)}
+${row("Left (OS)", r.sphere_os, r.cylinder_os, r.axis_os, r.add_os, r.prism_os)}</table>
+<p>${r.pd ? `<b>PD:</b> ${esc(r.pd)}<br/>` : ""}${r.notes ? `<b>Notes:</b> ${esc(r.notes)}` : ""}</p>
+<p style="margin-top:60px">______________________<br/>Signature</p>
+<script>window.onload=()=>{window.print()}</script></body></html>`);
+  w.document.close();
+}
 
 const today = () => new Date().toISOString().slice(0, 10);
 const inTwoYears = () => {
@@ -41,6 +70,7 @@ export default function OpticalPrescriptionsPage() {
   const { data: rxs = [], isLoading } = useOpticalPrescriptions();
   const save = useSaveOpticalPrescription();
   const remove = useDeleteOpticalPrescription();
+  const { currentOrg } = useOrg();
 
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState<Form>(blank);
@@ -135,6 +165,10 @@ export default function OpticalPrescriptionsPage() {
               <div className="flex items-center gap-2">
                 <Badge variant="outline">{r.rx_type || "Distance"}</Badge>
                 <span className="text-xs text-muted-foreground">{new Date(r.issue_date).toLocaleDateString()}</span>
+                <Button size="icon" variant="ghost" aria-label="Print or save as PDF" title="Print / PDF" onClick={() => printRx(r, currentOrg?.org_name || "Eye Clinic")}><Printer className="h-4 w-4" /></Button>
+                <Button size="icon" variant="ghost" aria-label="Send on WhatsApp" title="WhatsApp" asChild>
+                  <a href={whatsappLink(r.patients?.phone, rxText(r))} target="_blank" rel="noreferrer"><MessageCircle className="h-4 w-4" /></a>
+                </Button>
                 <Button size="icon" variant="ghost" onClick={() => remove.mutate(r.id)}><Trash2 className="h-4 w-4" /></Button>
               </div>
             </div>
