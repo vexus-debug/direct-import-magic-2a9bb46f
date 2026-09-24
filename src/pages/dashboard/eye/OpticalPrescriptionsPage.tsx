@@ -70,6 +70,7 @@ export default function OpticalPrescriptionsPage() {
   const { data: rxs = [], isLoading } = useOpticalPrescriptions();
   const save = useSaveOpticalPrescription();
   const remove = useDeleteOpticalPrescription();
+  const { currentOrg } = useOrg();
 
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState<Form>(blank);
