@@ -112,6 +112,14 @@ import EyeDiagnosticsPage from "./pages/dashboard/eye/EyeDiagnosticsPage";
 import SurgeryBookingsPage from "./pages/dashboard/eye/SurgeryBookingsPage";
 import EyeReportsPage from "./pages/dashboard/eye/EyeReportsPage";
 import EyeChartsPage from "./pages/dashboard/eye/EyeChartsPage";
+import PatientFlowPage from "./pages/dashboard/eye/PatientFlowPage";
+import DoctorVisitPage from "./pages/dashboard/eye/DoctorVisitPage";
+import EyeRecordsPage from "./pages/dashboard/eye/EyeRecordsPage";
+import GlassesPickupPage from "./pages/dashboard/eye/GlassesPickupPage";
+import FrameLensStockPage from "./pages/dashboard/eye/FrameLensStockPage";
+import ReferralsPage from "./pages/dashboard/eye/ReferralsPage";
+import SurgeryFollowupPage from "./pages/dashboard/eye/SurgeryFollowupPage";
+import AllPrescriptionsPage from "./pages/dashboard/eye/AllPrescriptionsPage";
 
 // Public result lookup
 import PublicResultPage from "./pages/PublicResultPage";
@@ -347,7 +355,15 @@ const App = () => (
               {/* Eye clinic */}
               <Route path="eye" element={<EyeOverviewPage />} />
               <Route path="eye/exams" element={<EyeExamsPage />} />
-              <Route path="eye/prescriptions" element={<OpticalPrescriptionsPage />} />
+              <Route path="eye/prescriptions" element={<AllPrescriptionsPage />} />
+              <Route path="eye/glasses-prescriptions" element={<OpticalPrescriptionsPage />} />
+              <Route path="eye/flow" element={<PatientFlowPage />} />
+              <Route path="eye/visit" element={<DoctorVisitPage />} />
+              <Route path="eye/records" element={<EyeRecordsPage />} />
+              <Route path="eye/pickup" element={<GlassesPickupPage />} />
+              <Route path="eye/stock" element={<FrameLensStockPage />} />
+              <Route path="eye/referrals" element={<ReferralsPage />} />
+              <Route path="eye/surgery-checklists" element={<SurgeryFollowupPage />} />
               <Route path="eye/contact-lenses" element={<ContactLensPage />} />
               <Route path="eye/orders" element={<OpticalOrdersPage />} />
               <Route path="eye/diagnostics" element={<EyeDiagnosticsPage />} />
