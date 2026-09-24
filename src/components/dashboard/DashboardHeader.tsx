@@ -12,6 +12,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useOrg } from "@/hooks/useOrg";
 import { useUnreadCount } from "@/hooks/useNotifications";
 import { extractRelativePath } from "@/config/roleAccess";
+import { QuickSearchAdd } from "@/components/dashboard/QuickSearchAdd";
 import { motion } from "framer-motion";
 
 const breadcrumbLabels: Record<string, string> = {
